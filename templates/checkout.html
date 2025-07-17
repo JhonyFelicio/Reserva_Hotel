@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Confirmar Check-Out{% endblock %}
+{% block content %}
+    <h2>Resumo para Check-Out</h2>
+    <div class="checkout-summary">
+        <h3>Detalhes da Estadia</h3>
+        <p><strong>Hóspede:</strong> {{ hospede.Nome }}</p>
+        <p><strong>CPF:</strong> {{ hospede.CPF }}</p>
+        <p><strong>Quarto:</strong> {{ quarto.Numero }}</p>
+        <p><strong>Período:</strong> De {{ hospede.CheckIn }} a {{ hospede.CheckOut }}</p>
+        <hr>
+        <h3>Cálculo Financeiro</h3>
+        <p><strong>Número de Diárias:</strong> {{ dias }}</p>
+        <p><strong>Valor da Diária:</strong> R$ {{ "%.2f"|format(quarto.ValorDiaria|float) }}</p>
+        <div class="valor-total">
+            <p><strong>VALOR TOTAL A PAGAR:</strong></p>
+            <span>R$ {{ "%.2f"|format(total|float) }}</span>
+        </div>
+
+        <form action="{{ url_for('finalizar_checkout', hospede_id=hospede_id) }}" method="post" style="margin-top: 20px;">
+            <input type="hidden" name="quarto_numero" value="{{ quarto.Numero }}">
+            <input type="hidden" name="dias_hospedado" value="{{ dias }}">
+            <input type="hidden" name="valor_diaria" value="{{ quarto.ValorDiaria }}">
+            <input type="hidden" name="valor_total" value="{{ total }}">
+            <button type="submit" class="btn btn-add" onclick="return confirm('Confirma o recebimento e o check-out? Esta ação não pode ser desfeita.');">Confirmar Pagamento e Finalizar Check-Out</button>
+        </form>
+    </div>
+    <p style="text-align: center; margin-top: 20px;"><a href="{{ url_for('index') }}">Cancelar e Voltar</a></p>
+{% endblock %}

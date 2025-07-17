@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Gerenciar Usuários{% endblock %}
+{% block content %}
+    <div class="admin-section">
+        <h2>Adicionar Novo Usuário</h2>
+        <form action="{{ url_for('gerenciar_usuarios') }}" method="post" class="inline-form">
+            <input type="text" name="username" placeholder="Nome de usuário" required>
+            <input type="password" name="password" placeholder="Senha" required>
+            <button type="submit" class="btn btn-add">Criar Usuário (Função: comum)</button>
+        </form>
+    </div>
+
+    <div class="admin-section">
+        <h2>Usuários Existentes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Função (Role)</th>
+                    <th style="width: 45%;">Alterar Senha</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td><strong>{{ usuario.Usuario }}</strong></td>
+                    <td><span class="badge">{{ usuario.Role }}</span></td>
+                    <td>
+                        <form action="{{ url_for('editar_senha', username=usuario.Usuario) }}" method="post" class="inline-form">
+                            <input type="password" name="new_password" placeholder="Digite a nova senha" required>
+                            <button type="submit" class="btn btn-edit">Salvar Senha</button>
+                        </form>
+                    </td>
+                    <td class="actions">
+                        {% if usuario.Usuario != 'admin' %}
+                        <a href="{{ url_for('excluir_usuario', username=usuario.Usuario) }}" class="btn-delete" onclick="return confirm('Tem certeza que deseja excluir o usuário {{ usuario.Usuario }}?');">Excluir</a>
+                        {% else %}
+                        <span class="text-muted">Admin não pode ser excluído</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

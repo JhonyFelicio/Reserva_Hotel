@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Gerenciar Quartos e Diárias{% endblock %}
+{% block content %}
+    <div class="admin-section">
+        <h2>Gerenciar Diárias dos Quartos</h2>
+        <p>Altere os valores nos campos desejados e clique em "Salvar Alterações" no final da página. Campos em branco não serão alterados.</p>
+        <form action="{{ url_for('gerenciar_quartos') }}" method="post">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Quarto</th>
+                        <th>Status</th>
+                        <th>Diária Atual (R$)</th>
+                        <th>Nova Diária (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quarto in quartos %}
+                    <tr>
+                        <td><strong>{{ quarto.Numero }}</strong></td>
+                        <td>
+                            <span class="badge {{ 'badge-success' if quarto.Status == 'Disponível' else 'badge-danger' }}">
+                                {{ quarto.Status }}
+                            </span>
+                        </td>
+                        <td>{{ "%.2f"|format(quarto.ValorDiaria|float) }}</td>
+                        <td>
+                            <input type="number" class="table-form-input"
+                                   name="diaria_{{ quarto.Numero }}"
+                                   placeholder="{{ '%.2f'|format(quarto.ValorDiaria|float) }}"
+                                   step="0.01" min="0">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-add" style="margin-top: 20px; width: 100%;">Salvar Todas as Alterações</button>
+        </form>
+    </div>
+{% endblock %}

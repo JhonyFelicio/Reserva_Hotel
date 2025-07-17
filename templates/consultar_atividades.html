@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Consultar Atividades{% endblock %}
+{% block content %}
+    <div class="admin-section">
+        <h2>Consultar Log de Atividades</h2>
+        <form action="{{ url_for('consultar_atividades') }}" method="post">
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label for="data_consulta">Filtrar por data:</label>
+                    <input type="date" id="data_consulta" name="data_consulta" value="{{ data_selecionada if data_selecionada }}">
+                </div>
+
+                <div class="filter-item">
+                    <label>Filtrar por ações:</label>
+                    <div class="checkbox-group">
+                        {% for acao in acoes_disponiveis %}
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" name="acoes" value="{{ acao }}" id="acao_{{ loop.index }}"
+                                {% if acao in acoes_selecionadas %}checked{% endif %}>
+                            <label for="acao_{{ loop.index }}">{{ acao }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn">Consultar</button>
+                <a href="{{ url_for('consultar_atividades') }}" class="btn btn-secondary">Limpar Filtros</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="admin-section">
+        <h2>Registros de Atividade</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data e Hora</th>
+                    <th>Usuário</th>
+                    <th>Ação</th>
+                    <th>Detalhes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for atividade in atividades %}
+                <tr>
+                    <td>{{ atividade.Timestamp }}</td>
+                    <td>{{ atividade.Usuario }}</td>
+                    <td><span class="badge">{{ atividade.Acao }}</span></td>
+                    <td>{{ atividade.Detalhes }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align:center;">Nenhuma atividade encontrada com os filtros selecionados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

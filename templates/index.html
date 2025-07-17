@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Painel de Controle do Hotel{% endblock %}
+{% block content %}
+    <h1>Agenda e Ocupação</h1>
+    <p style="text-align: center;"><a href="{{ url_for('adicionar') }}" class="btn btn-add">Nova Reserva</a></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Hóspede</th>
+                <th>Quarto</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hospede in hospedes %}
+            <tr>
+                <td>{{ hospede.Nome }}<br><small class="text-muted">CPF: {{ hospede.CPF }}</small></td>
+                <td><strong>{{ hospede.Quarto }}</strong></td>
+                <td>{{ hospede.CheckIn }} às {{ hospede.HoraCheckIn }}</td>
+                <td>{{ hospede.CheckOut }} às {{ hospede.HoraCheckOut }}</td>
+                <td>
+                    {% if hospede.StatusHospedagem == 'Agendado' %}
+                        <span class="badge badge-warning">{{ hospede.StatusHospedagem }}</span>
+                        {% if hospede.CheckIn == hoje_str %}
+                            <a href="{{ url_for('confirmar_hospedagem', hospede_id=loop.index0) }}" class="btn-confirm-checkin" title="Confirmar entrada do hóspede no hotel">Confirmar</a>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge badge-success">{{ hospede.StatusHospedagem }}</span>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{{ url_for('gerenciar_reserva', hospede_id=loop.index0) }}" class="btn-edit">Gerenciar</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" style="text-align:center;">Nenhuma reserva ativa ou agendada.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="painel-caixa">
+        <h2>Painel de Caixa</h2>
+        {% if resumo_mensal %}
+            <table>
+                <thead><tr><th>Mês/Ano</th><th>Faturamento Total</th></tr></thead>
+                <tbody>
+                    {% for mes in resumo_mensal %}
+                    <tr><td>{{ mes.Mes }}</td><td><strong>R$ {{ "%.2f"|format(mes.ValorTotal|float) }}</strong></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="text-align:center;">Nenhum faturamento registrado.</p>
+        {% endif %}
+    </div>
+
+    <div class="painel-quartos">
+        <h2>Status dos Quartos</h2>
+        <div class="grid-quartos">
+            {% for quarto in quartos %}
+            <div class="quarto-card quarto-{{ 'ocupado' if quarto.Status == 'Ocupado' else 'disponivel' }}">
+                <p class="quarto-numero">{{ quarto.Numero }}</p>
+                <p class="quarto-status">{{ 'Ocupado' if quarto.Status == 'Ocupado' else 'Disponível' }}</p>
+                <p class="quarto-info">Diária: R$ {{ "%.2f"|format(quarto.ValorDiaria|float) }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

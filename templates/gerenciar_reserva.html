@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Gerenciar Reserva{% endblock %}
+{% block content %}
+    <h2>Gerenciar Reserva de {{ hospede.Nome }}</h2>
+    <div class="admin-section">
+        <h3>Opções de Gerenciamento</h3>
+        <p>Escolha a ação que deseja realizar para esta reserva.</p>
+        <div class="actions-group">
+            <a href="{{ url_for('editar_reserva', hospede_id=hospede_id) }}" class="btn btn-edit">Editar Reserva</a>
+            <a href="{{ url_for('checkout', hospede_id=hospede_id) }}" class="btn btn-add">Proceder para Check-Out</a>
+            <button type="button" class="btn btn-delete" onclick="document.getElementById('cancel-form').style.display='block';">Cancelar Reserva</button>
+        </div>
+
+        <form id="cancel-form" action="{{ url_for('cancelar_reserva', hospede_id=hospede_id) }}" method="post" style="display:none; margin-top:20px;">
+            <label for="observacao">Motivo do Cancelamento (Obrigatório):</label>
+            <textarea id="observacao" name="observacao" rows="3" required></textarea>
+            <button type="submit" class="btn btn-delete" onclick="return confirm('Tem certeza que deseja CANCELAR esta reserva? Esta ação não pode ser desfeita.');">Confirmar Cancelamento</button>
+        </form>
+    </div>
+    <p style="text-align: center; margin-top:20px;"><a href="{{ url_for('index') }}">Voltar para o Painel</a></p>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Login - Sistema Hotel{% endblock %}
+{% block content %}
+    <div class="login-container">
+        <h2>Acesso ao Painel</h2>
+        <form action="{{ url_for('login') }}" method="post">
+            <label for="username">Usuário:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+    </div>
+{% endblock %}

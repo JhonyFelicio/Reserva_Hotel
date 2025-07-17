@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema Hotel{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% if session['logged_in'] %}
+    <header class="main-header">
+        <div class="user-info">Logado como: <strong>{{ session['username'] }}</strong> ({{ session['role'] }})</div>
+        <nav class="main-nav">
+            <a href="{{ url_for('index') }}">Painel Principal</a>
+            {% if session['role'] == 'admin' %}
+            <a href="{{ url_for('gerenciar_usuarios') }}">Gerenciar Usuários</a>
+            <a href="{{ url_for('gerenciar_quartos') }}">Gerenciar Quartos</a>
+            <a href="{{ url_for('consultar_atividades') }}">Consultar Atividades</a>
+            {% endif %}
+        </nav>
+        <a href="{{ url_for('logout') }}" class="btn btn-logout">Sair</a>
+    </header>
+    {% endif %}
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}<ul class="flash-messages">
+                {% for category, message in messages %}<li class="flash-{{ category }}">{{ message }}</li>{% endfor %}
+            </ul>{% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const flashMessages = document.querySelectorAll('.flash-messages li');
+            flashMessages.forEach(function(message) { setTimeout(() => { message.style.animation = 'fadeOutUp 0.5s forwards'; }, 5000); });
+        });
+    </script>
+</body>
+</html>
